@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sherry.dao.CardDao">
+
+    <select id="queryAllCards" resultMap="cardResult">
+        SELECT
+          a.id,
+          a.card_num,
+          a.card_pwd,
+          a.name,
+          b.identity_id,
+          b.identity_name,
+          a.max_num,
+          a.book_num,
+          c.valid_id,
+          c.valid_name
+        FROM t_card a,t_identity b,t_valid c
+        WHERE a.identity_id=b.identity_id AND a.valid_id=c.valid_id
+    </select>
+
+    <select id="queryOneCard" resultMap="cardResult">
+        SELECT
+          a.id,
+          a.card_num,
+          a.card_pwd,
+          a.name,
+          b.identity_id,
+          b.identity_name,
+          a.max_num,
+          a.book_num,
+          c.valid_id,
+          c.valid_name
+        FROM t_card a,t_identity b,t_valid c
+        WHERE a.identity_id=b.identity_id AND a.valid_id=c.valid_id AND a.card_num=#{cardNum}
+    </select>
+
+    <insert id="insertCard" keyProperty="id" parameterType="Card">
+        INSERT INTO
+        t_card(card_num,card_pwd,name,identity_id,max_num,book_num)
+        VALUES (#{cardNum},#{cardPwd},#{name},#{identity.identityId},#{maxNum},#{bookNum})
+    </insert>
+    
+    <delete id="deleteCard">
+        DELETE FROM t_card
+        WHERE id=#{id}
+    </delete>
+
+    <update id="updateCard">
+        UPDATE t_card
+        SET card_pwd=#{cardPwd},name=#{name},identity_id=#{identity.id},max_num=#{maxNum},book_num=#{bookNum},valid_id=#{valid.id}
+        WHERE id=#{id}
+    </update>
+
+    <resultMap id="cardResult" type="Card">
+        <id property="id" column="id"/>
+        <result property="cardNum" column="card_num"/>
+        <result property="cardPwd" column="card_pwd"/>
+        <result property="name" column="name"/>
+        <result property="maxNum" column="max_num"/>
+        <result property="bookNum" column="book_num"/>
+        <association property="identity" column="identity_id" javaType="Identity" resultMap="identityResult"/>
+        <association property="valid" column="valid_id" javaType="Valid" resultMap="validResult"/>
+    </resultMap>
+
+    <resultMap id="identityResult" type="Identity">
+        <result property="identityId" column="identity_id"/>
+        <result property="identityName" column="identity_name"/>
+        <result property="maxNum" column="max_num"/>
+    </resultMap>
+
+    <resultMap id="validResult" type="Valid">
+        <result property="validId" column="valid_id"/>
+        <result property="validName" column="valid_name"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sherry.dao.TypeDao">
+
+    <select id="queryAllType" resultMap="typeResult">
+        SELECT *
+        FROM t_type
+    </select>
+
+    <insert id="insertType" keyProperty="sort_Id">
+        INSERT INTO t_type(sort_name)
+        VALUES(#{sortName})
+    </insert>
+
+    <update id="updateById">
+        UPDATE t_type
+        SET sort_name=#{sortName}
+        WHERE sort_Id=#{sortId}
+    </update>
+
+    <resultMap id="typeResult" type="Type">
+        <id property="sortId" column="sort_id"/>
+        <result property="sortName" column="sort_name"/>
+    </resultMap>
+
+</mapper>

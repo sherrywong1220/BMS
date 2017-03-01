@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sherry.dao.BookDao">
+
+    <select id="queryAllBook" resultMap="bookResult">
+        SELECT
+          a.book_num,
+          a.book_name,
+          a.writer,
+          a.call_number,
+          b.sort_id,
+          b.sort_name,
+          a.price,
+          a.pub_company,
+          a.pub_date,
+          a.total_num,
+          a.current_num,
+          a.brief
+        FROM t_book a
+        INNER JOIN t_type b ON a.sort_id=b.sort_id
+    </select>
+
+    <delete id="deleteBook">
+        DELETE FROM t_book WHERE book_num=#{bookNum}
+    </delete>
+
+    <insert id="insertBook" keyProperty="bookNum" parameterType="Book">
+        INSERT INTO t_book(book_name,writer,call_number,sort_id,price,pub_company,pub_date,total_num,current_num,brief)
+        VALUES(#{bookName},#{writer},#{callNumber},#{type.sortId},#{price},#{pubCompany},#{pubDate},#{totalNum},#{currentNum},#{brief})
+    </insert>
+
+    <select id="queryByName" resultMap="bookResult">
+        SELECT
+          a.book_num,
+          a.book_name,
+          a.writer,
+          a.call_number,
+          b.sort_name,
+          b.sort_id,
+          a.price,
+          a.pub_company,
+          a.pub_date,
+          a.total_num,
+          a.current_num,
+          a.brief
+        FROM t_book a
+        INNER JOIN t_type b ON a.sort_id=b.sort_id
+        WHERE book_name LIKE CONCAT(CONCAT("%",#{bookName}),"%")
+    </select>
+
+    <select id="queryByNum" resultMap="bookResult">
+        select
+          a.book_num,
+          a.book_name,
+          a.writer,
+          a.call_number,
+          b.sort_name,
+          b.sort_id,
+          a.price,
+          a.pub_company,
+          a.pub_date,
+          a.total_num,
+          a.current_num,
+          a.brief
+        FROM t_book a
+        INNER JOIN t_type b ON a.sort_id=b.sort_id
+        WHERE book_num=#{bookNum}
+    </select>
+
+    <update id="updateBook">
+        UPDATE t_book
+        SET book_name=#{bookName},writer=#{writer},call_number=#{callNumber},sort_id=#{type.sortId},price=#{price},pub_company=#{pubCompany},pub_date=#{pubDate},total_num=#{totalNum},current_num=#{currentNum},brief=#{brief}
+        WHERE book_Num=#{bookNum}
+    </update>
+
+    <resultMap id="bookResult" type="Book">
+        <id property="bookNum" column="book_num"/>
+        <result property="bookName" column="book_name"/>
+        <result property="brief" column="brief"/>
+        <result property="callNumber" column="call_Number"/>
+        <result property="currentNum" column="current_num"/>
+        <result property="price" column="price"/>
+        <result property="pubCompany" column="pub_company"/>
+        <result property="pubDate" column="pub_date"/>
+        <result property="totalNum" column="total_num"/>
+        <result property="writer" column="writer"/>
+        <association property="type" column="sort_id" javaType="Type" resultMap="typeResult"/>
+    </resultMap>
+
+    <resultMap id="typeResult" type="Type">
+        <id property="sortId" column="sort_id"/>
+        <result property="sortName" column="sort_name"/>
+    </resultMap>
+
+</mapper>
